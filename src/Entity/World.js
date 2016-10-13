@@ -19,6 +19,7 @@
             this.event =
                 {
                     dispatcher: nk.Event.Dispatcher( this ),
+                    listener: nk.Event.Listener(),
                     typeId: 'world',
                     active: true
                 };
@@ -35,7 +36,15 @@
     World.prototype._WorldProcess = function ( _ctx, _delta )
     {
         this.Draw( _ctx );
-        var event = this.event;
+        var i, children = this.children, l = children.length, child, event = this.event;
+        for ( i = l - 1; i >= 0; i-- )
+        {
+            child = children[ i ];
+            if ( child && child.onProcess )
+            {
+                child.onProcess( _delta );
+            }
+        }
         if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'tick', { delta: _delta });
     };
     World.prototype._MouseDownHandle = function ( _event )
@@ -48,12 +57,25 @@
     };
     World.prototype._MouseMoveHandle = function ( _event )
     {
-
+        var i, children = this.children, l = children.length, child, event = this.event;
+        for ( i = l - 1; i >= 0; i-- )
+        {
+            child = children[ i ];
+            if ( child && child.onMove )
+            {
+                if ( nk.Math.PointInSprite( _event, child ) === true )
+                {
+                    child.onMove();
+                    break;
+                }
+            }
+        }
+        if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'move', { point: _event });
     };
     World.prototype._MouseClickHandle = function ( _event )
     {
-        var i, children = this.children, l = children.length, child;
-        for (i = l - 1; i >= 0; i-- )
+        var i, children = this.children, l = children.length, child, event = this.event;
+        for ( i = l - 1; i >= 0; i-- )
         {
             child = children[ i ];
             if ( child && child.onClick )
@@ -65,6 +87,7 @@
                 }
             }
         }
+        if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'click', { point: _event });
     };
     World.prototype.Begin = function ( _tps )
     {
