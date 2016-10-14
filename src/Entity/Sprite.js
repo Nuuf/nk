@@ -16,21 +16,21 @@
     Sprite.prototype = Object.create( nk.Entity.Base.prototype );
     Sprite.prototype._SpriteDraw = function ( _ctx )
     {
-        _ctx.save();
-        _ctx.translate( this.x, this.y );
-        _ctx.scale( this.scale.x, this.scale.y );
-        _ctx.rotate( this.rotation );
-        if ( this.texture ) this.texture.Draw( _ctx );
-        _ctx.restore();
         if ( this.drawBounds === true )
         {
             var bounds = this.bounds;
             _ctx.save();
             _ctx.translate( this.x, this.y );
-            _ctx.rect( bounds.x, bounds.y, bounds.width, bounds.height );
-            _ctx.stroke();
+            _ctx.strokeStyle = '#225522';
+            _ctx.strokeRect( bounds.x, bounds.y, bounds.width, bounds.height );
             _ctx.restore();
         }
+        _ctx.save();
+        _ctx.translate( this.x, this.y );
+        _ctx.scale( this.scale.x, this.scale.y );
+        _ctx.rotate( this.rotation );
+        if ( this.texture ) this.texture.Draw( _ctx );
+        _ctx.restore(); 
     };
     Sprite.prototype.Draw = function ( _ctx )
     {
@@ -51,7 +51,7 @@
         bounds.width = w * this.scale.x;
         bounds.height = h * this.scale.y;
     };
-    Sprite.prototype.PointInSprite = function ( _point)
+    Sprite.prototype.PointInSprite = function ( _point )
     {
         var rect = this.bounds;
         if ( !rect ) return false;
@@ -63,6 +63,20 @@
             }
         }
         return false;
+    };
+    Sprite.prototype.Delete = function ()
+    {
+        if ( this.parent )
+        {
+            this.parent.RemoveChild( this );
+        }
+    };
+    Sprite.prototype.MoveToTop = function ()
+    {
+        if ( this.parent )
+        {
+            this.parent.MoveToTop( this );
+        }
     };
     Sprite.Circle = function ( _x, _y, _radius, _options )
     {
@@ -77,9 +91,15 @@
     Sprite.Rectangle = function ( _x, _y, _width, _height, _options )
     {
         _options = _options || {};
-        var path = new nk.Path.Rectangle( -_height * 0.5, -_width * 0.5, _width, _height );
+        var path = new nk.Path.Rectangle( -_width * 0.5, -_height * 0.5, _width, _height );
         if ( _options.cut === true ) path.Cut();
         var texture = new nk.Texture.Vector( path );
+        if ( _options.strokeColor ) texture.style.strokeColor.SetHex( _options.strokeColor );
+        if ( _options.hsl === true )
+        {
+            texture.style.strokeColor.ConvertToHSL();
+            texture.style.fillColor.ConvertToHSL();
+        }
         var sprite = new Sprite( _x, _y, texture );
         sprite.CalculateBounds();
         return sprite;

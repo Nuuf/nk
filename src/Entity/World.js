@@ -16,7 +16,8 @@
             this.mouse.onUp = this._MouseUpHandle.bind( this );
             this.mouse.onMove = this._MouseMoveHandle.bind( this );
             this.mouse.onClick = this._MouseClickHandle.bind( this );
-            this.mouse.onDownMove = this._MouseDownMoveHandle.bind( this ),
+            this.mouse.onDownMove = this._MouseDownMoveHandle.bind( this );
+            this.mouse.onOut = this._MouseOutHandle.bind( this );
             this.event =
                 {
                     dispatcher: nk.Event.Dispatcher( this ),
@@ -38,43 +39,48 @@
     {
         this.Draw( _ctx );
         var event = this.event;
-        this.HandleChildrenBTT('onProcess', _delta, false);
+        this.HandleChildrenBTT( 'onProcess', _delta, false );
         if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'tick', { delta: _delta });
     };
     World.prototype._MouseDownHandle = function ( _event )
     {
         var event = this.event;
-        var child = this.PointInChild(_event.point);
-        if (child && child.onDown) child.onDown(_event);
+        var child = this.PointInChild( _event.point );
+        if ( child && child.onDown ) child.onDown( _event );
         if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'down', { point: _event });
     };
     World.prototype._MouseUpHandle = function ( _event )
     {
         var event = this.event;
-        var child = this.PointInChild(_event.point);
-        if (child && child.onUp) child.onUp(_event);
+        var child = this.PointInChild( _event.point );
+        if ( child && child.onUp ) child.onUp( _event );
         if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'up', { point: _event });
     };
     World.prototype._MouseMoveHandle = function ( _event )
     {
         var event = this.event;
-        var child = this.PointInChild(_event.point);
-        if (child && child.onMove) child.onMove(_event);
+        var child = this.PointInChild( _event.point );
+        if ( child && child.onMove ) child.onMove( _event );
         if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'move', { point: _event });
     };
     World.prototype._MouseClickHandle = function ( _event )
     {
         var event = this.event;
-        var child = this.PointInChild(_event.point);
-        if (child && child.onClick) child.onClick(_event);
+        var child = this.PointInChild( _event.point );
+        if ( child && child.onClick ) child.onClick( _event );
         if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'click', { point: _event });
     };
-    World.prototype._MouseDownMoveHandle = function( _event )
+    World.prototype._MouseDownMoveHandle = function ( _event )
     {
         var event = this.event;
-        var child = this.PointInChild(_event.point);
-        if (child && child.onDownMove) child.onDownMove(_event);
+        var child = this.PointInChild( _event.point );
+        if ( child && child.onDownMove ) child.onDownMove( _event );
         if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'downmove', { point: _event });
+    };
+    World.prototype._MouseOutHandle = function(_event)
+    {
+        var event = this.event;
+        if ( event.active === true ) event.dispatcher.Emit( event.typeId + 'out', { point: _event });
     };
     World.prototype.Begin = function ( _tps )
     {

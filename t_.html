@@ -54,14 +54,41 @@
         cc.Create('layer1');
         var world = new nk.Entity.World(cc.Get('layer1'));
 
-		var sprite = new nk.Entity.Sprite.Circle(600, 400, 100);
-		sprite.drawBounds = true;
-		sprite.onDownMove = function()
-		{
-			console.log('x');
-		}
+		world.ticker.clear = false; world.ticker.fade = true;
 
-		world.AddChild(sprite);
+		for (var i = 0; i < 10; ++i)
+		{
+			var sprite = new nk.Entity.Sprite.Rectangle(600, 400, 50, 500, {strokeColor: 'ffff00', hsl: true});
+			sprite.drawBounds = true;
+			sprite.rotSpeed = Math.random() * 10 - 5;
+			sprite.onProcess = function()
+			{
+				this.rotation += nk.Math.D2R(this.rotSpeed);
+				this.CalculateBounds();
+				this.texture.style.strokeColor.IncreaseChannel(0, Math.random() * 5);
+			};
+			sprite.onDown = function(_e)
+			{
+				this.startDrag = true;
+				this.dragOffset = new nk.Base.Point(_e.point.x - this.x, _e.point.y - this.y);
+				this.MoveToTop();
+			};
+			sprite.onUp = function(_e)
+			{
+				this.startDrag = false;
+			};
+			sprite.onDownMove = function(_e)
+			{
+				if (this.startDrag)
+				{
+					this.x = _e.point.x - this.dragOffset.x;
+					this.y = _e.point.y - this.dragOffset.y;
+				}
+			};
+
+			world.AddChild(sprite);
+		}
+		
     </script>
 
 </body>

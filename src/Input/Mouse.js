@@ -17,11 +17,13 @@
             this.onMove = function () { };
             this.onClick = function () { };
             this.onDownMove = function () { };
+            this.onOut = function () { };
 
             this.canvas.addEventListener( 'mousedown', this._OnDown.bind( this ) );
             this.canvas.addEventListener( 'mouseup', this._OnUp.bind( this ) );
             this.canvas.addEventListener( 'mousemove', this._OnMove.bind( this ) );
             this.canvas.addEventListener( 'click', this._OnClick.bind( this ) );
+            this.canvas.addEventListener( 'mouseout', this._OnOut.bind( this ) );
         }
         else return new Mouse( _canvas );
     }
@@ -55,6 +57,13 @@
                 this.__ProcessPosition( _event );
 
                 this.onClick( { point: this.position });
+            },
+            _OnOut: function ( _event )
+            {
+                this.down = false;
+                this.__ProcessPosition( _event );
+
+                this.onOut( { point: this.position });
             },
             __ProcessPosition: function ( _event )
             {

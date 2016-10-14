@@ -51,6 +51,15 @@
             }
         }
     };
+    Container.prototype.MoveToTop = function ( _child )
+    {
+        var index = this.children.indexOf( _child );
+        if ( index !== -1 )
+        {
+            var child = this.children.splice( index, 1 )[0];
+            this.children.push(child);
+        }
+    };
     Container.prototype._ContainerDraw = function ( _ctx )
     {
         var i = 0, children = this.children, l = children.length, child;
