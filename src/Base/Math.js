@@ -31,18 +31,6 @@
         else if ( _x > _y ) return _y;
         return _c;
     };
-    nk.Math.PointInSprite = function ( _point, _sprite )
-    {
-        var rect = _sprite.bounds;
-        if ( _point.x > _sprite.x + rect.x && _point.x < _sprite.x + rect.width * 0.5 )
-        {
-            if ( _point.y > _sprite.y + rect.y && _point.y < _sprite.y + rect.height * 0.5 )
-            {
-                return true;
-            }
-        }
-        return false;
-    };
 
 
     Object.defineProperty( nk.Math, 'PII', { writable: false });

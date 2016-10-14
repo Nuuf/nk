@@ -28,6 +28,10 @@
         if ( this.stroke === true ) _ctx.stroke();
     };
     Circle.prototype.Cut = function () { this.isCut = true; };
+    Circle.prototype.GetBounds = function ()
+    {
+        return nk.Geom.Rectangle(this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
+    };
 
     nk.Path.Circle = Circle;
 } () );

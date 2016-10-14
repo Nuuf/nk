@@ -31,6 +31,7 @@
 	<script src="src/Entity/Base.js" type="text/javascript"></script>
 	<script src="src/Entity/Sprite.js" type="text/javascript"></script>
 	<script src="src/Entity/Container.js" type="text/javascript"></script>
+	<script src="src/Entity/Polyflux.js" type="text/javascript"></script>
 	<script src="src/Entity/World.js" type="text/javascript"></script>
 
 	<style>
@@ -53,33 +54,14 @@
         cc.Create('layer1');
         var world = new nk.Entity.World(cc.Get('layer1'));
 
-		world.ticker.fade = false; world.ticker.clear = false;
-
-		function Process()
+		var sprite = new nk.Entity.Sprite.Circle(600, 400, 100);
+		sprite.drawBounds = true;
+		sprite.onDownMove = function()
 		{
-			this.Translate(this.vel);
-			if (--this.lifespan <= 0) this.parent.RemoveChild(this);
-			this.texture.style.fillColor.IncreaseChannel(0, 1);
+			console.log('x');
 		}
 
-		world.event.listener.On('worldclick', function(_e)
-		{
-			for (var i = 0; i < 200; ++i)
-			{
-				var sprite = new nk.Entity.Sprite.Rectangle(_e.point.CopyPoint(), null, Math.random() * 10 + 10, Math.random() * 10 + 10);
-				sprite.vel = new nk.Base.Vector(Math.random() * 10 - 5, Math.random() * 10 - 5);
-				sprite.lifespan = 100;
-				var style = sprite.texture.style;
-				style.fillColor.SetHex('fff000');
-				style.fillColor.ConvertToHSL();
-				style.strokeColor.SetHex('000000');
-				sprite.texture.path.fill = true;
-				sprite.rotation = Math.random() * nk.Math.PII;
-				sprite.onProcess = Process;
-				world.AddChild(sprite);
-			}
-			console.log(world.children.length);
-		});
+		world.AddChild(sprite);
     </script>
 
 </body>

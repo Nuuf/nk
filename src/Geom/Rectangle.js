@@ -14,6 +14,15 @@
     };
     Rectangle.prototype = Object.create( nk.Base.Vector.prototype );
     Rectangle.prototype.constructor = Rectangle;
+    Rectangle.prototype.GetCenterPoint = function()
+    {
+        return new nk.Base.Vector(this.x + (this.width * 0.5), this.y + (this.height * 0.5));
+    };
+    Rectangle.prototype.Centralize = function()
+    {
+        this.x = -this.width * 0.5;
+        this.y = -this.height * 0.5;
+    };
 
     nk.Geom.Rectangle = Rectangle;
 } () );

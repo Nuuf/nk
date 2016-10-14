@@ -34,6 +34,10 @@
                     this.width,
                     this.height
                     );
+            },
+            GetBounds: function ()
+            {
+                
             }
         };
 

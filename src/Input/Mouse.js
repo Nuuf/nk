@@ -10,11 +10,13 @@
             this.noffset = new nk.Base.Point( _noffset );
             this.scale = new nk.Base.Point( _scale );
             this.position = new nk.Base.Point();
+            this.down = false;
 
             this.onDown = function () { };
             this.onUp = function () { };
             this.onMove = function () { };
             this.onClick = function () { };
+            this.onDownMove = function () { };
 
             this.canvas.addEventListener( 'mousedown', this._OnDown.bind( this ) );
             this.canvas.addEventListener( 'mouseup', this._OnUp.bind( this ) );
@@ -28,27 +30,31 @@
             constructor: Mouse,
             _OnDown: function ( _event )
             {
+                this.down = true;
                 this.__ProcessPosition( _event );
 
-                this.onDown( this.position );
+                this.onDown( { point: this.position });
             },
             _OnUp: function ( _event )
             {
+                this.down = false;
                 this.__ProcessPosition( _event );
 
-                this.onUp( this.position );
+                this.onUp( { point: this.position });
             },
             _OnMove: function ( _event )
             {
                 this.__ProcessPosition( _event );
 
-                this.onMove( this.position );
+                if ( this.down === false ) this.onMove( { point: this.position });
+                else this.onDownMove( { point: this.position });
             },
             _OnClick: function ( _event )
             {
+                this.down = false;
                 this.__ProcessPosition( _event );
 
-                this.onClick( this.position );
+                this.onClick( { point: this.position });
             },
             __ProcessPosition: function ( _event )
             {

@@ -9,11 +9,12 @@
             nk.Entity.Base.call( this, _x, _y );
             this.texture = _texture || null;
             this.bounds = null;
+            this.drawBounds = false;
         }
         else return new Sprite( _x, _y, _texture );
     }
     Sprite.prototype = Object.create( nk.Entity.Base.prototype );
-    Sprite.prototype.Draw = function ( _ctx )
+    Sprite.prototype._SpriteDraw = function ( _ctx )
     {
         _ctx.save();
         _ctx.translate( this.x, this.y );
@@ -21,10 +22,47 @@
         _ctx.rotate( this.rotation );
         if ( this.texture ) this.texture.Draw( _ctx );
         _ctx.restore();
+        if ( this.drawBounds === true )
+        {
+            var bounds = this.bounds;
+            _ctx.save();
+            _ctx.translate( this.x, this.y );
+            _ctx.rect( bounds.x, bounds.y, bounds.width, bounds.height );
+            _ctx.stroke();
+            _ctx.restore();
+        }
+    };
+    Sprite.prototype.Draw = function ( _ctx )
+    {
+        this._SpriteDraw( _ctx );
     };
     Sprite.prototype.CalculateBounds = function ()
     {
-        this.bounds = this.texture.GetBounds();
+        var bounds = this.bounds = this.texture.GetBounds();
+
+        var sinTH = Math.abs( Math.sin( this.rotation ) );
+        var cosTH = Math.abs( Math.cos( this.rotation ) );
+        var w = ( sinTH * bounds.height ) + ( cosTH * bounds.width );
+        var h = ( sinTH * bounds.width ) + ( cosTH * bounds.height );
+
+        bounds.x = -w * 0.5 * this.scale.x;
+        bounds.y = -h * 0.5 * this.scale.y;
+
+        bounds.width = w * this.scale.x;
+        bounds.height = h * this.scale.y;
+    };
+    Sprite.prototype.PointInSprite = function ( _point)
+    {
+        var rect = this.bounds;
+        if ( !rect ) return false;
+        if ( _point.x > this.x + rect.x && _point.x < this.x + rect.width * 0.5 )
+        {
+            if ( _point.y > this.y + rect.y && _point.y < this.y + rect.height * 0.5 )
+            {
+                return true;
+            }
+        }
+        return false;
     };
     Sprite.Circle = function ( _x, _y, _radius, _options )
     {
@@ -33,6 +71,7 @@
         if ( _options.cut === true ) path.Cut();
         var texture = new nk.Texture.Vector( path );
         var sprite = new Sprite( _x, _y, texture );
+        sprite.CalculateBounds();
         return sprite;
     };
     Sprite.Rectangle = function ( _x, _y, _width, _height, _options )

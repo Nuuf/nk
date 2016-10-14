@@ -22,9 +22,9 @@
         if ( this.isCut === true )
         {
             _ctx.moveTo( this.x, this.y );
-            _ctx.lineTo( this.x + this.width, this.x + this.height );
+            _ctx.lineTo( this.x + this.width, this.y + this.height );
             _ctx.moveTo( this.x + this.width * 0.5, this.y + this.height * 0.5 );
-            _ctx.lineTo( this.width * 0.5, 0 );
+            _ctx.lineTo( this.x + this.width, this.y + this.height * 0.5);
         }
         if ( this.fill === true ) _ctx.fill();
         if ( this.stroke === true ) _ctx.stroke();

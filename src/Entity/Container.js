@@ -51,7 +51,7 @@
             }
         }
     };
-    Container.prototype.Draw = function ( _ctx )
+    Container.prototype._ContainerDraw = function ( _ctx )
     {
         var i = 0, children = this.children, l = children.length, child;
         _ctx.save();
@@ -75,6 +75,51 @@
             }
         }
         _ctx.restore();
+    };
+    Container.prototype.Draw = function ( _ctx )
+    {
+        this._ContainerDraw( _ctx );
+    };
+    Container.prototype.HandleChildrenBTT = function ( _function, _args, _break )
+    {
+        var i = 0, children = this.children, l = children.length, child;
+        for ( i; i < l; ++i )
+        {
+            child = children[ i ];
+            if ( child && child[ _function ] )
+            {
+                child[ _function ]( _args );
+                if ( _break === true ) break;
+            }
+        }
+    };
+    Container.prototype.HandleChildrenTTB = function ( _function, _args, _break )
+    {
+        var children = this.children, i = children.length, child;
+        for ( i; i >= 0; i-- )
+        {
+            child = children[ i ];
+            if ( child && child[ _function ] )
+            {
+                child[ _function ]( _args );
+                if ( _break === true ) break;
+            }
+        }
+    };
+    Container.prototype.PointInChild = function ( _point )
+    {
+        var children = this.children, i = children.length, child;
+        for ( i; i >= 0; i-- )
+        {
+            child = children[ i ];
+            if ( child )
+            {
+                if ( child.PointInSprite( _point ) === true )
+                {
+                    return child;
+                }
+            }
+        }
     };
 
     nk.Entity.Container = Container;
